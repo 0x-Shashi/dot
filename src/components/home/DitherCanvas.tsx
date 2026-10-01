@@ -234,7 +234,7 @@ export const DitherCanvas: React.FC<DitherCanvasProps> = ({
     let startTime = performance.now();
 
     function resize() {
-      if (!canvas || !canvas.parentElement) return;
+      if (!canvas || !canvas.parentElement || !gl) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const w = Math.floor(canvas.parentElement.clientWidth * dpr);
       const h = Math.floor(canvas.parentElement.clientHeight * dpr);
@@ -247,28 +247,30 @@ export const DitherCanvas: React.FC<DitherCanvasProps> = ({
 
     resize();
     const ro = new ResizeObserver(resize);
-    ro.observe(canvas.parentElement!);
+    if (canvas.parentElement) {
+      ro.observe(canvas.parentElement);
+    }
 
     function render() {
+      if (!canvas || !gl) return;
       const now = (performance.now() - startTime) * 0.001;
-      const g = gl!;
-      g.useProgram(program);
-      g.bindVertexArray(vao);
+      gl.useProgram(program);
+      gl.bindVertexArray(vao);
 
-      g.uniform2f(locRes, canvas.width, canvas.height);
-      g.uniform1f(locTime, now);
-      g.uniform1f(locWaveSpeed, waveSpeed);
-      g.uniform1f(locWaveFrequency, waveFrequency);
-      g.uniform1f(locWaveAmplitude, waveAmplitude);
-      g.uniform3f(locWaveColor, waveColor[0], waveColor[1], waveColor[2]);
-      g.uniform3f(locBgColor, backgroundColor[0], backgroundColor[1], backgroundColor[2]);
-      g.uniform2f(locMousePos, mousePosRef.current[0], mousePosRef.current[1]);
-      g.uniform1i(locEnableMouse, enableMouseInteraction ? 1 : 0);
-      g.uniform1f(locMouseRadius, mouseRadius);
-      g.uniform1f(locColorNum, colorNum);
-      g.uniform1f(locPixelSize, pixelSize);
+      gl.uniform2f(locRes, canvas.width, canvas.height);
+      gl.uniform1f(locTime, now);
+      gl.uniform1f(locWaveSpeed, waveSpeed);
+      gl.uniform1f(locWaveFrequency, waveFrequency);
+      gl.uniform1f(locWaveAmplitude, waveAmplitude);
+      gl.uniform3f(locWaveColor, waveColor[0], waveColor[1], waveColor[2]);
+      gl.uniform3f(locBgColor, backgroundColor[0], backgroundColor[1], backgroundColor[2]);
+      gl.uniform2f(locMousePos, mousePosRef.current[0], mousePosRef.current[1]);
+      gl.uniform1i(locEnableMouse, enableMouseInteraction ? 1 : 0);
+      gl.uniform1f(locMouseRadius, mouseRadius);
+      gl.uniform1f(locColorNum, colorNum);
+      gl.uniform1f(locPixelSize, pixelSize);
 
-      g.drawArrays(g.TRIANGLES, 0, 6);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
       animId = requestAnimationFrame(render);
     }
 
@@ -290,11 +292,13 @@ export const DitherCanvas: React.FC<DitherCanvasProps> = ({
       cancelAnimationFrame(animId);
       window.removeEventListener('pointermove', handlePointerMove);
       ro.disconnect();
-      gl.deleteProgram(program);
-      gl.deleteShader(vs);
-      gl.deleteShader(fs);
-      gl.deleteBuffer(vbo);
-      gl.deleteVertexArray(vao);
+      if (gl) {
+        gl.deleteProgram(program);
+        gl.deleteShader(vs);
+        gl.deleteShader(fs);
+        gl.deleteBuffer(vbo);
+        gl.deleteVertexArray(vao);
+      }
     };
   }, [
     waveSpeed,
