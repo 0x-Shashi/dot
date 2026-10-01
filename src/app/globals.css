@@ -1,0 +1,654 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0a0a0a;       /* Primary text, buttons, icons */
+  --muted: #6b6b6b;     /* Secondary text (metadata, descriptions) */
+  --line: #e8e8e8;     /* Hairline borders, notched-joint grid lines */
+  --lav: #d5d8fb;      /* Lavender — headline highlight, active/selected states */
+  --lime: #c9ff0f;     /* Lime green — artwork blocks, chart bars, chips */
+  --peri: #aaaef8;     /* Periwinkle — artwork blocks, alternate accent */
+  --grey: #f3f3f3;     /* Light grey — neutral fills, placeholder tiles */
+  --white: #ffffff;
+  --r: 12px;
+  --nj: 8px;           /* Notched joint corner radius */
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, Menlo, Monaco, monospace;
+  --mono: var(--font-mono);
+  --sans: var(--font-sans);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Custom Minimal Transparent Scrollbar across site & dropdowns */
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.14);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+body {
+  background-color: #ffffff;
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--sans);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard Wrapper (#dash) - Full-Bleed Page Edge-to-Edge
+   -------------------------------------------------------------------------- */
+#dash {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 0 48px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* --------------------------------------------------------------------------
+   1. Search Bar Row with Vertical Lines 1 & 3 Continuing Upward
+   Columns align 1:1 with the 4-column card grid below
+   -------------------------------------------------------------------------- */
+#dash .search-grid-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+#dash .search-col-side {
+  height: 100%;
+  min-height: 72px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+#dash .search-col-side.left {
+  /* Vertical Line 1: column 1 boundary (25%) continues all the way up */
+  border-bottom-right-radius: var(--nj);
+}
+
+#dash .search-col-center {
+  /* Columns 2 & 3: spans 25% to 75% between Vertical Line 1 and 3 */
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 24px;
+  background: #ffffff;
+  border-bottom-left-radius: var(--nj);
+  border-bottom-right-radius: var(--nj);
+}
+
+#dash .search-col-side.right {
+  /* Column 4: 75% to 100% */
+  background: #ffffff;
+  border-bottom-left-radius: var(--nj);
+}
+
+/* --------------------------------------------------------------------------
+   2. FilterBar Grid Row: 4 Boxes × 2 Filters = 8 Filters Total
+   Middle Vertical Line 2 (50%) stops here with top notched joint!
+   -------------------------------------------------------------------------- */
+#dash .filter-section-row {
+  width: 100%;
+  background: var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+#dash .filter-grid-row {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+}
+
+#dash .filter-box {
+  background: #ffffff;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  position: relative;
+}
+
+/* Symmetrical Notched Joints at all line intersections */
+#dash .filter-box.col-1 {
+  border-top-right-radius: var(--nj);
+  border-bottom-right-radius: var(--nj);
+}
+
+#dash .filter-box.col-2 {
+  border-radius: var(--nj);
+}
+
+#dash .filter-box.col-3 {
+  border-radius: var(--nj);
+}
+
+#dash .filter-box.col-4 {
+  border-top-left-radius: var(--nj);
+  border-bottom-left-radius: var(--nj);
+}
+
+#dash .f-trigger-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
+  transition: all .16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#dash .f-trigger-btn:hover {
+  border-color: var(--ink);
+  background: #f9fafb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+#dash .f-trigger-btn.on {
+  background: var(--lav);
+  border-color: var(--lav);
+  color: #000;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(186,196,255,0.35);
+}
+
+#dash .f-btn-icon {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+#dash .f-trigger-btn.on .f-btn-icon {
+  color: #000;
+}
+
+#dash .f-btn-text {
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#dash .f-chevron {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+#dash .f-reset-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 34px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: #fff;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+#dash .f-reset-btn.active {
+  border-color: #fecdd3;
+  color: #e11d48;
+  background: #fff5f5;
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+#dash .f-reset-btn.active:hover {
+  background: #ffe4e6;
+  border-color: #e11d48;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(225,29,72,0.12);
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Edge-to-Edge Grid with Authentic NOTCHED JOINTS
+   Lines continue to the screen edges with zero gap on left and right sides
+   -------------------------------------------------------------------------- */
+#dash .tiles {
+  --cols: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  width: 100%;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+#dash .tiles.st {
+  --cols: 4;
+}
+
+#dash .tile {
+  display: block;
+  min-width: 0;
+  background: #fff;
+  text-align: left;
+  color: inherit;
+  border: 0;
+  border-radius: var(--nj);
+  transition: background 0.15s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Project Cards inside Notched Connected Grid (.prj-card)
+   With smooth interactive hover animations on text and card
+   -------------------------------------------------------------------------- */
+#dash .prj-card {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 180px;
+  background: #ffffff;
+  border-radius: var(--nj);
+  transition: background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+}
+
+#dash .prj-card:hover {
+  background-color: #fafafa;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+#dash .blk-sm {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+#dash .blk-sm.b0 { background: var(--lime); }
+#dash .blk-sm.b1 { background: var(--peri); }
+#dash .blk-sm.b2 { background: var(--lav); }
+#dash .blk-sm.b3 { background: var(--ink); }
+
+#dash .prj-title {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+/* 2-line visible description (shortened to 2 lines, max 3 lines) */
+#dash .prj-description {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 38px;
+}
+
+/* Card bottom section: NO internal divider line */
+#dash .card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Smaller Tags */
+#dash .tag-chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.2;
+  padding: 3px 8px;
+  background: var(--grey);
+  border-radius: 999px;
+  color: #404040;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   VIEW Buttons: 50:50 ratio of Lime Green (#c9ff0f) & Periwinkle Blue (#aaaef8)
+   -------------------------------------------------------------------------- */
+#dash .card-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+  padding: 4px 11px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Lime Green Variant (50%) */
+#dash .card-link-btn.lime {
+  background: var(--lime); /* #c9ff0f */
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Periwinkle Blue Variant (50%) */
+#dash .card-link-btn.peri {
+  background: var(--peri); /* #aaaef8 */
+  border: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+#dash .card-link-btn:hover {
+  background: #0a0a0a !important;
+  color: #ffffff !important;
+  border-color: #0a0a0a !important;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+}
+
+#dash .card-link-btn:active {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Load Next 50 Button & Empty State
+   -------------------------------------------------------------------------- */
+#dash .load-more-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+}
+
+#dash .load-more-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 9px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: var(--lime);
+  color: #0a0a0a;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+#dash .load-more-btn:hover {
+  background: #0a0a0a;
+  color: #ffffff;
+  border-color: #0a0a0a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#dash .empty-state-row {
+  width: 100%;
+  text-align: center;
+  padding: 64px 20px;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  #dash .tiles.st {
+    --cols: 2;
+  }
+  #dash .search-grid-row {
+    grid-template-columns: 1fr;
+  }
+  #dash .search-col-side {
+    display: none;
+  }
+  #dash .search-col-center {
+    grid-column: span 1;
+    border-right: none;
+  }
+  #dash .filter-grid-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  #dash .tiles.st {
+    --cols: 1;
+  }
+  #dash .filter-grid-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Home Page Styles (matching user HTML exactly)
+   -------------------------------------------------------------------------- */
+.home-page-root {
+  --bg: #f3f3f3;
+  --ink: #0a0a0a;
+  --muted: #6b6b6b;
+  --line: #e8e8e8;
+  --lav: #d5d8fb;
+  --lime: #c9ff0f;
+  --peri: #aaaef8;
+  --grey: #f3f3f3;
+  --panel: #aaaef8;
+  --dot: #c9ff0f;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.home-page-root * {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.home-page-root .left {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 4.5vw, 80px);
+  min-height: 100vh;
+  border-right: 1px solid var(--line);
+  background: var(--bg);
+  position: relative;
+  z-index: 10;
+}
+
+.home-page-root .pre {
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  font-size: clamp(16px, 1.4vw, 24px);
+  color: var(--muted);
+  margin-top: clamp(40px, 12vh, 150px);
+}
+
+.home-page-root .pre b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.home-page-root h1 {
+  color: var(--ink);
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 400;
+  font-size: clamp(44px, 6.4vw, 118px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-top: clamp(24px, 5vh, 60px);
+}
+
+.home-page-root h1 span {
+  display: block;
+}
+
+.home-page-root .l1 {
+  margin-left: -0.055em;
+}
+
+.home-page-root .l2 {
+  margin-left: -0.085em;
+}
+
+.home-page-root .sub {
+  font-size: clamp(18px, 1.7vw, 28px);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 30ch;
+  margin-top: clamp(32px, 6vh, 70px);
+  font-family: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+}
+
+.home-page-root .actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-top: clamp(32px, 5vh, 60px);
+}
+
+.home-page-root .btn {
+  font-family: var(--font-mono), "JetBrains Mono", monospace;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--lime);
+  color: var(--ink);
+  padding: 26px 37px;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.home-page-root .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.home-page-root :focus-visible {
+  outline: 3px solid var(--peri);
+  outline-offset: 3px;
+}
+
+.home-page-root .right {
+  background: var(--panel);
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+}
+
+.home-page-root canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (max-width: 820px) {
+  .home-page-root {
+    grid-template-columns: 1fr;
+  }
+  .home-page-root .right {
+    position: relative;
+    width: 100%;
+    height: 45vh;
+    order: -1;
+  }
+  .home-page-root .left {
+    min-height: auto;
+  }
+  .home-page-root .pre {
+    margin-top: 32px;
+  }
+}
